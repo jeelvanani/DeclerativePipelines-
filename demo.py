@@ -12,7 +12,7 @@ schema = StructType([
 ])
 
 # Generate base DataFrame with 1000 rows
-df = spark.range(1000).withColumnRenamed("id", "transaction_id")
+df = spark.range(5000).withColumnRenamed("id", "transaction_id")
 
 # Add realistic columns
 df = df.withColumn("customer_id", (col("transaction_id") % 200) + 1) \
@@ -23,4 +23,6 @@ df = df.withColumn("customer_id", (col("transaction_id") % 200) + 1) \
 
 # Schema is already applied by the transformations above; avoid using df.rdd for serverless.
 
-display(df)
+#display(df)
+
+df.write.format("delta").mode("overwrite").saveAsTable("demo.demo.transactionTable")
