@@ -19,9 +19,8 @@ df = df.withColumn("customer_id", (col("transaction_id") % 200) + 1) \
        .withColumn("product", expr("CASE WHEN transaction_id % 5 = 0 THEN 'Laptop' WHEN transaction_id % 5 = 1 THEN 'Phone' WHEN transaction_id % 5 = 2 THEN 'Tablet' WHEN transaction_id % 5 = 3 THEN 'Headphones' ELSE 'Camera' END")) \
        .withColumn("amount", (rand() * 1000 + 50).cast("double")) \
        .withColumn("location", expr("CASE WHEN transaction_id % 4 = 0 THEN 'New York' WHEN transaction_id % 4 = 1 THEN 'San Francisco' WHEN transaction_id % 4 = 2 THEN 'Chicago' ELSE 'Austin' END")) \
-       .withColumn("timestamp", expr("date_add('2026-03-01', transaction_id % 14)"))
+       .withColumn("timestamp", expr("date_add('2026-03-01', CAST(transaction_id % 14 AS INT))"))
 
-# Apply schema
-df = spark.createDataFrame(df.rdd, schema)
+# Schema is already applied by the transformations above; avoid using df.rdd for serverless.
 
 display(df)
